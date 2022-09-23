@@ -1,4 +1,8 @@
 class Customer < ApplicationRecord
+  include Elasticsearch::Model
+  # レコードが更新したタイミングでESのドキュメントも更新してくれる
+  # TODO: 同期的処理なので、sidekiqなど使用し非同期に変更する
+  include Elasticsearch::Model::Callbacks
   include EmailHolder
   include PersonalNameHolder
   include PasswordHolder
@@ -30,5 +34,19 @@ class Customer < ApplicationRecord
       self.birth_month = birthday.month
       self.birth_mday = birthday.mday
     end
+  end
+
+  # Elastic Searchで検索
+  def self.es_search(query)
+    __elasticsearch__.search({
+      query: {
+        multi_match: {
+          fields: %w(family_name given_name family_name_kana given_name_kana email),
+          type: 'cross_fields',
+          query: query,
+          operator: 'and'
+        }
+      }
+    })
   end
 end

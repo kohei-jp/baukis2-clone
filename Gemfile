@@ -20,6 +20,10 @@ gem "date_validator"
 gem "valid_email2"
 gem "nokogiri"
 
+# elasticsearch
+gem 'elasticsearch-model', '~> 7.2', '>= 7.2.1'
+gem 'elasticsearch-rails', '~> 7.2', '>= 7.2.1'
+
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
 end
